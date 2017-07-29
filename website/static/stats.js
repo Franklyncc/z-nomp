@@ -109,9 +109,17 @@ $.getJSON('/api/pool_stats', function(data){
     displayCharts();
 });
 
+var updateDelay = 2500;
+var lastUpdateTime = new Date();
 statsSource.addEventListener('message', function(e){
     var stats = JSON.parse(e.data);
     statData.push(stats);
+    statData.shift();
+
+    var currentTime = new Date();
+    if((currentTime  - lastUpdateTime ) < updateDelay) return;
+    lastUpdateTime = currentTime ;
+
 
     var newPoolAdded = (function(){
         for (var p in stats.pools){
